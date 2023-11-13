@@ -89,9 +89,9 @@ const Auth = () => {
           element="input"
           type="password"
           label="Password"
-          validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(8)]}
+          validators={[VALIDATOR_REQUIRE(), VALIDATOR_MINLENGTH(6)]}
           onInput={inputHandler}
-          errorText="Please enter a valid password (at least 8 characters)."
+          errorText="Please enter a valid password (at least 6 characters)."
         ></Input>
         <Button type="submit" disabled={!formState.isValid}>
           {isLoginMode ? "LOGIN" : "SIGN UP"}
