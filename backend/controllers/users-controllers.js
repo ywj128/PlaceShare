@@ -30,7 +30,7 @@ const signup = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data", 422)
     );
   }
-  const { email, password, name, places } = req.body;
+  const { email, password, name} = req.body;
   let existingUser;
   try {
     existingUser = await User.findOne({ email: email });
@@ -50,7 +50,7 @@ const signup = async (req, res, next) => {
     password,
     image:
       "https://www.verywellmind.com/thmb/fcB45Y2_4efpRrcrkxliTqk6EmU=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/GettyImages-4660327211-56b5fae93df78c0b13571d1e.jpg",
-    places,
+    places: []
   });
   try {
     await createdUser.save();
