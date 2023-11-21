@@ -21,7 +21,7 @@ const UserPlaces = () => {
       } catch (err) {}
     };
     getPlaces();
-  }, [sendRequest]);
+  }, [sendRequest, userId]);
 
   return (
     <React.Fragment>
