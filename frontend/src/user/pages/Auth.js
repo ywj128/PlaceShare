@@ -58,8 +58,9 @@ const Auth = () => {
   const authSubmitHandler = async (event) => {
     event.preventDefault();
     try {
+      let responseData;
       if (isLoginMode) {
-        await sendRequest(
+        responseData = await sendRequest(
           "http://localhost:5000/api/users/login",
           "POST",
           JSON.stringify({
@@ -71,7 +72,7 @@ const Auth = () => {
           }
         );
       } else {
-        await sendRequest(
+        responseData = await sendRequest(
           "http://localhost:5000/api/users/signup",
           "POST",
           JSON.stringify({
@@ -84,7 +85,7 @@ const Auth = () => {
           }
         );
       }
-      auth.login();
+      auth.login(responseData.user.id);
     } catch (err) {}
   };
 
