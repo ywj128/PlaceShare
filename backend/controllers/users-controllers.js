@@ -38,8 +38,7 @@ const signup = async (req, res, next) => {
     name,
     email,
     password,
-    image:
-      "https://www.verywellmind.com/thmb/fcB45Y2_4efpRrcrkxliTqk6EmU=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/GettyImages-4660327211-56b5fae93df78c0b13571d1e.jpg",
+    image: req.file.path,
     places: [],
   });
   try {
