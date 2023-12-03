@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
 
 const User = require("../models/user");
 const HttpError = require("../models/http-error");
@@ -34,10 +35,18 @@ const signup = async (req, res, next) => {
       new HttpError("User exists already, please login instead.", 422)
     );
   }
+
+  let hashedPassword;
+  try{
+    hashedPassword = await bcrypt.hash(password, 12);
+  }catch(err){
+    return next(new HttpError("Signing up failed, please try again later.", 500))
+  }
+
   const createdUser = new User({
     name,
     email,
-    password,
+    password: hashedPassword,
     image: req.file.path,
     places: [],
   });
@@ -62,11 +71,27 @@ const login = async (req, res, next) => {
       new HttpError("Logging in failed, please try again later.", 500)
     );
   }
-  if (!existingUser || existingUser.password !== password) {
+  if (!existingUser) {
     return next(
       new HttpError("Invalid credentials, could not log you in.", 401)
     );
   }
+
+  let isValidPassword = false;
+  try{
+    isValidPassword = await bcrypt.compare(password, existingUser.password);
+  }catch(err){
+    return next(
+      new HttpError("Logging in failed, please try again later.", 500)
+    );
+  }
+
+  if(!isValidPassword){
+    return next(
+      new HttpError("Invalid credentials, could not log you in.", 401)
+    );
+  }
+
   res.json({
     message: "Logged in!",
     user: existingUser.toObject({ getters: true }),
