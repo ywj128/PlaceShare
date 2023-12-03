@@ -64,7 +64,7 @@ const UpdatePlace = () => {
 
   const placeUpdateSubmitHandler = async (event) => {
     event.preventDefault();
-    try{
+    try {
       await sendRequest(
         `http://localhost:5000/api/places/${placeId}`,
         "PATCH",
@@ -74,12 +74,11 @@ const UpdatePlace = () => {
         }),
         {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`
         }
       );
       history.push(`/${auth.userId}/places`);
-    }catch(err){
-
-    }
+    } catch (err) {}
   };
 
   if (isLoading) {
