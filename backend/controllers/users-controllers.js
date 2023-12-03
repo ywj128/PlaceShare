@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const HttpError = require("../models/http-error");
@@ -37,10 +38,12 @@ const signup = async (req, res, next) => {
   }
 
   let hashedPassword;
-  try{
+  try {
     hashedPassword = await bcrypt.hash(password, 12);
-  }catch(err){
-    return next(new HttpError("Signing up failed, please try again later.", 500))
+  } catch (err) {
+    return next(
+      new HttpError("Signing up failed, please try again later.", 500)
+    );
   }
 
   const createdUser = new User({
@@ -57,7 +60,21 @@ const signup = async (req, res, next) => {
       new HttpError("Signing up failed, please try again later.", 500)
     );
   }
-  res.status(201).json({ user: createdUser.toObject({ getters: true }) });
+
+  let token;
+  try {
+    token = await jwt.sign(
+      { userId: createdUser.id, email: createdUser.email },
+      "secret_code",
+      { expiresIn: "1h" }
+    );
+  } catch (err) {
+    return next(
+      new HttpError("Signing up failed, please try again later.", 500)
+    );
+  }
+
+  res.status(201).json({ userId: createdUser.id, email: createdUser.email, token });
 };
 
 const login = async (req, res, next) => {
@@ -78,23 +95,37 @@ const login = async (req, res, next) => {
   }
 
   let isValidPassword = false;
-  try{
+  try {
     isValidPassword = await bcrypt.compare(password, existingUser.password);
-  }catch(err){
+  } catch (err) {
     return next(
       new HttpError("Logging in failed, please try again later.", 500)
     );
   }
 
-  if(!isValidPassword){
+  if (!isValidPassword) {
     return next(
       new HttpError("Invalid credentials, could not log you in.", 401)
     );
   }
 
+  let token;
+  try {
+    token = await jwt.sign(
+      { userId: existingUser.id, email: existingUser.email },
+      "secret_code",
+      { expiresIn: "1h" }
+    );
+  } catch (err) {
+    return next(
+      new HttpError("Logging up failed, please try again later.", 500)
+    );
+  }
+
   res.json({
-    message: "Logged in!",
-    user: existingUser.toObject({ getters: true }),
+    userId: existingUser.id,
+    email: existingUser.email,
+    token
   });
 };
 
