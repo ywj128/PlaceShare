@@ -92,7 +92,7 @@ const Auth = () => {
           formData
         );
       }
-      auth.login(responseData.userId);
+      auth.login(responseData.userId, responseData.token);
     } catch (err) {}
   };
 
