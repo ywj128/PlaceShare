@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 const HttpError = require("../models/http-error.js");
 const getCoordsForAddress = require("../util/location.js");
+const fileDelete = require("../middleware/file-delete.js");
 const Place = require("../models/place.js");
 const User = require("../models/user.js");
 
@@ -71,7 +72,7 @@ const createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image: req.file.path,
+    image: req.file.location,
     creator,
   });
 
@@ -171,9 +172,7 @@ const deletePlace = async (req, res, next) => {
     return next(new HttpError("Deleting place failed, please try again.", 500));
   }
 
-  fs.unlink(imagePath, (err) => {
-    console.log(err);
-  });
+  fileDelete(imagePath);
 
   res.status(200).json({ message: "place deleted" });
 };
