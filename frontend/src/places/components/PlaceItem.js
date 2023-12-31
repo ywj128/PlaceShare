@@ -61,7 +61,7 @@ const PlaceItem = (props) => {
         footerClass="plact-item__modal-actions"
         footer={
           <React.Fragment>
-            <Button inverse onClick={cancelDeleteHandler}>
+            <Button onClick={cancelDeleteHandler}>
               CANCEL
             </Button>
             <Button danger onClick={confirmDeleteHandler}>
@@ -90,7 +90,7 @@ const PlaceItem = (props) => {
             <p>{props.description}</p>
           </div>
           <div className="place-item__actions">
-            <Button inverse onClick={openMapHandler}>
+            <Button onClick={openMapHandler}>
               VIEW ON MAP
             </Button>
             {auth.userId === props.creator && (
